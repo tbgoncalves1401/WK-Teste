@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2022/10/14 15:09:35.000.552,=D:\Documentos\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
+    <Transaction>2022/10/14 15:23:23.000.494,D:\Documentos\Embarcadero\Studio\Projects\Unit2.dfm=D:\BlueGreen\Fontes\WK\002\UCadPessoa.dfm</Transaction>
+    <Transaction>2022/10/14 15:23:23.000.494,D:\Documentos\Embarcadero\Studio\Projects\Unit2.pas=D:\BlueGreen\Fontes\WK\002\UCadPessoa.pas</Transaction>
+    <Transaction>2022/10/14 15:23:32.000.716,D:\Documentos\Embarcadero\Studio\Projects\Project2.dproj=D:\BlueGreen\Fontes\WK\002\WKTeste.dproj</Transaction>
+    <Transaction>2022/10/14 19:17:15.000.652,=D:\BlueGreen\Fontes\WK\002\Unit1.pas</Transaction>
+    <Transaction>2022/10/14 19:26:45.000.883,D:\BlueGreen\Fontes\WK\002\UPesquisaPessoa.pas=D:\BlueGreen\Fontes\WK\002\Unit1.pas</Transaction>
+    <Transaction>2022/10/14 19:26:45.000.883,D:\BlueGreen\Fontes\WK\002\UPesquisaPessoa.dfm=D:\BlueGreen\Fontes\WK\002\Unit1.dfm</Transaction>
+    <Transaction>2022/10/15 09:43:32.046,=D:\BlueGreen\Fontes\WK\002\Unit1.pas</Transaction>
+    <Transaction>2022/10/15 09:44:28.521,D:\BlueGreen\Fontes\WK\002\UDmConexao.pas=D:\BlueGreen\Fontes\WK\002\Unit1.pas</Transaction>
+    <Transaction>2022/10/15 09:44:28.521,D:\BlueGreen\Fontes\WK\002\UDmConexao.dfm=D:\BlueGreen\Fontes\WK\002\Unit1.dfm</Transaction>
+  </Transactions>
+</BorlandProject>

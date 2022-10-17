@@ -1,0 +1,82 @@
+object WsPessoa: TWsPessoa
+  OldCreateOrder = False
+  Height = 326
+  Width = 379
+  object QyPessoa: TFDQuery
+    CachedUpdates = True
+    Connection = DmConexao.FdConexao
+    UpdateObject = FDUpdateSQL
+    SQL.Strings = (
+      'SELECT * FROM PESSOA')
+    Left = 40
+    Top = 32
+    object QyPessoaidpessoa: TLargeintField
+      FieldName = 'idpessoa'
+      Origin = 'idpessoa'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object QyPessoaflnatureza: TIntegerField
+      FieldName = 'flnatureza'
+      Origin = 'flnatureza'
+      Required = True
+    end
+    object QyPessoadsdocumento: TStringField
+      FieldName = 'dsdocumento'
+      Origin = 'dsdocumento'
+      Required = True
+    end
+    object QyPessoanmprimeiro: TStringField
+      FieldName = 'nmprimeiro'
+      Origin = 'nmprimeiro'
+      Required = True
+      Size = 100
+    end
+    object QyPessoanmsegundo: TStringField
+      FieldName = 'nmsegundo'
+      Origin = 'nmsegundo'
+      Required = True
+      Size = 100
+    end
+    object QyPessoadtregistro: TDateField
+      AutoGenerateValue = arDefault
+      FieldName = 'dtregistro'
+      Origin = 'dtregistro'
+    end
+  end
+  object FDUpdateSQL: TFDUpdateSQL
+    InsertSQL.Strings = (
+      'INSERT INTO wk.pessoa'
+      '(flnatureza, dsdocumento, nmprimeiro, nmsegundo, '
+      '  dtregistro)'
+      
+        'VALUES (:new_flnatureza, :new_dsdocumento, :new_nmprimeiro, :new' +
+        '_nmsegundo, '
+      '  :new_dtregistro)')
+    ModifySQL.Strings = (
+      'UPDATE wk.pessoa'
+      
+        'SET flnatureza = :new_flnatureza, dsdocumento = :new_dsdocumento' +
+        ', '
+      '  nmprimeiro = :new_nmprimeiro, nmsegundo = :new_nmsegundo, '
+      '  dtregistro = :new_dtregistro'
+      'WHERE idpessoa = :old_idpessoa')
+    DeleteSQL.Strings = (
+      'DELETE FROM wk.pessoa'
+      'WHERE idpessoa = :old_idpessoa')
+    FetchRowSQL.Strings = (
+      
+        'SELECT LAST_INSERT_ID() AS idpessoa, flnatureza, dsdocumento, nm' +
+        'primeiro, '
+      '  nmsegundo, dtregistro'
+      'FROM wk.pessoa'
+      'WHERE idpessoa = ('
+      'SELECT '#39'AUTO_INCREMENT'#39
+      'FROM  INFORMATION_SCHEMA.TABLES'
+      'WHERE TABLE_SCHEMA = '#39'WK'#39
+      'AND   TABLE_NAME   = '#39'PESSOA'#39')'
+      '')
+    Left = 48
+    Top = 88
+  end
+end

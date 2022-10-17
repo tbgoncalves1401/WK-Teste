@@ -1,0 +1,16 @@
+program WKTeste;
+
+uses
+  Vcl.Forms,
+  UCadPessoa in 'UCadPessoa.pas' {Form2},
+  UPesquisaPessoa in 'UPesquisaPessoa.pas' {frPesquisa};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TForm2, Form2);
+  Application.CreateForm(TfrPesquisa, frPesquisa);
+  Application.Run;
+end.
