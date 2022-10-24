@@ -1,8 +1,9 @@
 object FrPessoa: TFrPessoa
   Left = 0
   Top = 0
+  BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Cadastro de pessoa'
-  ClientHeight = 335
+  ClientHeight = 163
   ClientWidth = 734
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -12,6 +13,7 @@ object FrPessoa: TFrPessoa
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -122,14 +124,14 @@ object FrPessoa: TFrPessoa
     ParentBiDiMode = False
     TabOrder = 4
   end
-  object BitBtn1: TBitBtn
+  object btnPesquisar: TBitBtn
     Left = 137
     Top = 62
     Width = 75
     Height = 25
     Caption = 'Pesquisar'
     TabOrder = 5
-    OnClick = BitBtn1Click
+    OnClick = btnPesquisarClick
   end
   object EdUF: TEdit
     Left = 218
@@ -164,8 +166,8 @@ object FrPessoa: TFrPessoa
     TabOrder = 9
   end
   object btGravar: TButton
-    Left = 105
-    Top = 176
+    Left = 337
+    Top = 110
     Width = 75
     Height = 25
     Caption = '&Gravar'
@@ -173,8 +175,8 @@ object FrPessoa: TFrPessoa
     OnClick = btGravarClick
   end
   object btNovo: TButton
-    Left = 24
-    Top = 176
+    Left = 256
+    Top = 110
     Width = 75
     Height = 25
     Caption = '&Novo'
@@ -182,8 +184,8 @@ object FrPessoa: TFrPessoa
     OnClick = btNovoClick
   end
   object btnPesquisarPessoa: TButton
-    Left = 186
-    Top = 176
+    Left = 418
+    Top = 110
     Width = 75
     Height = 25
     Caption = '&Pesquisar'
@@ -191,42 +193,34 @@ object FrPessoa: TFrPessoa
     OnClick = btnPesquisarPessoaClick
   end
   object btnDelete: TButton
-    Left = 267
-    Top = 176
+    Left = 499
+    Top = 110
     Width = 75
     Height = 25
     Caption = '&Excluir'
     TabOrder = 13
     OnClick = btnDeleteClick
   end
-  object RESTResponseGet: TRESTResponse
-    ContentType = 'text/html'
-    RootElement = 'result'
-    Left = 144
-    Top = 216
+  object btnLote: TButton
+    Left = 603
+    Top = 110
+    Width = 75
+    Height = 25
+    Caption = '&Ler lote'
+    TabOrder = 14
+    OnClick = btnLoteClick
   end
-  object RESTRequestGet: TRESTRequest
-    Client = RESTGet
-    Params = <
-      item
-        Kind = pkREQUESTBODY
-        name = 'body'
-        Options = [poDoNotEncode]
-        ContentType = ctAPPLICATION_JSON
-      end>
-    Response = RESTResponseGet
-    SynchronizedEvents = False
-    Left = 88
-    Top = 216
+  object ProgressBar1: TProgressBar
+    Left = 0
+    Top = 146
+    Width = 734
+    Height = 17
+    Align = alBottom
+    TabOrder = 15
   end
-  object RESTGet: TRESTClient
-    Accept = 'application/json, text/plain; q=0.9, text/html;q=0.8,'
-    AcceptCharset = 'UTF-8, *;q=0.8'
-    BaseURL = 'http://127.0.0.1:8080/datasnap/rest/TWsPessoa/Pessoa'
-    Params = <>
-    HandleRedirects = True
-    RaiseExceptionOn500 = False
-    Left = 40
-    Top = 216
+  object OpenDialog1: TOpenDialog
+    Filter = '*.csv'
+    Left = 224
+    Top = 104
   end
 end

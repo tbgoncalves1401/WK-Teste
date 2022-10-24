@@ -19,4 +19,16 @@ object ServerContainer1: TServerContainer1
     Left = 200
     Top = 11
   end
+  object EnderecoIntegracao: TDSServerClass
+    OnGetClass = EnderecoIntegracaoGetClass
+    Server = DSServer1
+    Left = 232
+    Top = 83
+  end
+  object Endereco: TDSServerClass
+    OnGetClass = EnderecoGetClass
+    Server = DSServer1
+    Left = 248
+    Top = 187
+  end
 end

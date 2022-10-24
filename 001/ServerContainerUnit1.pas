@@ -12,7 +12,13 @@ type
     DSServer1: TDSServer;
     DSHTTPService1: TDSHTTPService;
     Pessoa: TDSServerClass;
+    EnderecoIntegracao: TDSServerClass;
+    Endereco: TDSServerClass;
     procedure PessoaGetClass(DSServerClass: TDSServerClass;
+      var PersistentClass: TPersistentClass);
+    procedure EnderecoIntegracaoGetClass(DSServerClass: TDSServerClass;
+      var PersistentClass: TPersistentClass);
+    procedure EnderecoGetClass(DSServerClass: TDSServerClass;
       var PersistentClass: TPersistentClass);
   private
     { Private declarations }
@@ -26,7 +32,19 @@ implementation
 
 {$R *.dfm}
 
-uses Winapi.Windows, UPessoa;
+uses Winapi.Windows, UPessoa, UEndereco, UEnderecoIntegracao;
+
+procedure TServerContainer1.EnderecoGetClass(DSServerClass: TDSServerClass;
+  var PersistentClass: TPersistentClass);
+begin
+  PersistentClass := UEndereco.TWsEndereco;
+end;
+
+procedure TServerContainer1.EnderecoIntegracaoGetClass(
+  DSServerClass: TDSServerClass; var PersistentClass: TPersistentClass);
+begin
+  PersistentClass := UEnderecoIntegracao.TWsEnderecoIntegracao;
+end;
 
 procedure TServerContainer1.PessoaGetClass(
   DSServerClass: TDSServerClass; var PersistentClass: TPersistentClass);

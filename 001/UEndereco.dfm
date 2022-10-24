@@ -5,54 +5,37 @@ object WsEndereco: TWsEndereco
   object QyEndereco: TFDQuery
     CachedUpdates = True
     Connection = DmConexao.FdConexao
-    UpdateObject = FDUpdateSQL
     SQL.Strings = (
       'SELECT * FROM ENDERECO'
       '')
     Left = 48
     Top = 32
-    object QyEnderecoidpessoa: TLargeintField
-      FieldName = 'idpessoa'
-      Origin = 'idpessoa'
+    object QyEnderecoidendereco: TLargeintField
+      FieldName = 'idendereco'
+      Origin = 'idendereco'
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
     end
-    object QyEnderecoflnatureza: TIntegerField
-      FieldName = 'flnatureza'
-      Origin = 'flnatureza'
+    object QyEnderecoidpessoa: TLargeintField
+      FieldName = 'idpessoa'
+      Origin = 'idpessoa'
       Required = True
     end
-    object QyEnderecodsdocumento: TStringField
-      FieldName = 'dsdocumento'
-      Origin = 'dsdocumento'
-      Required = True
-    end
-    object QyEndereconmprimeiro: TStringField
-      FieldName = 'nmprimeiro'
-      Origin = 'nmprimeiro'
-      Required = True
-      Size = 100
-    end
-    object QyEndereconmsegundo: TStringField
-      FieldName = 'nmsegundo'
-      Origin = 'nmsegundo'
-      Required = True
-      Size = 100
-    end
-    object QyEnderecodtregistro: TDateField
+    object QyEnderecodscep: TStringField
       AutoGenerateValue = arDefault
-      FieldName = 'dtregistro'
-      Origin = 'dtregistro'
+      FieldName = 'dscep'
+      Origin = 'dscep'
+      Size = 15
     end
   end
   object FDUpdateSQL: TFDUpdateSQL
     InsertSQL.Strings = (
       'INSERT INTO wk.endereco'
-      '(idpessoa, dscep)'
-      'VALUES (:new_idpessoa, :new_dscep)')
+      '(idpessoa, dscep, idendereco)'
+      'VALUES (:new_idpessoa, :new_dscep, :new_idendereco)')
     ModifySQL.Strings = (
       'UPDATE wk.endereco'
-      'SET idpessoa = :new_idpessoa, dscep = :new_dscep'
+      'SET idpessoa =  dscep = :new_dscep'
       'WHERE idendereco = :old_idendereco')
     DeleteSQL.Strings = (
       'DELETE FROM wk.endereco'
@@ -67,7 +50,7 @@ object WsEndereco: TWsEndereco
   object QyLast: TFDQuery
     Connection = DmConexao.FdConexao
     SQL.Strings = (
-      'SELECT MAX(IDENDERECO)NEW FROM ENDERECO')
+      'SELECT MAX(idendereco)NEW FROM ENDERECO')
     Left = 152
     Top = 104
   end

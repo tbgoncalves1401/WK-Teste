@@ -1,6 +1,7 @@
 object frPesquisa: TfrPesquisa
   Left = 0
   Top = 0
+  BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Pesquisar'
   ClientHeight = 326
   ClientWidth = 592
@@ -35,6 +36,7 @@ object frPesquisa: TfrPesquisa
       Top = 16
       Width = 121
       Height = 21
+      NumbersOnly = True
       TabOrder = 0
     end
     object btnPesquisar: TButton
@@ -62,36 +64,6 @@ object frPesquisa: TfrPesquisa
     TitleFont.Name = 'Tahoma'
     TitleFont.Style = []
     OnDblClick = DBGrid1DblClick
-  end
-  object RESTClient1: TRESTClient
-    Accept = 'application/json, text/plain; q=0.9, text/html;q=0.8,'
-    AcceptCharset = 'UTF-8, *;q=0.8'
-    BaseURL = 'http://127.0.0.1:8080/datasnap/rest/TWsPessoa/Pessoa'
-    Params = <>
-    HandleRedirects = True
-    RaiseExceptionOn500 = False
-    Left = 480
-    Top = 8
-  end
-  object RESTRequest1: TRESTRequest
-    Client = RESTClient1
-    Params = <
-      item
-        Kind = pkREQUESTBODY
-        name = 'body'
-        Options = [poDoNotEncode]
-        ContentType = ctAPPLICATION_JSON
-      end>
-    Response = RESTResponse1
-    SynchronizedEvents = False
-    Left = 488
-    Top = 16
-  end
-  object RESTResponse1: TRESTResponse
-    ContentType = 'text/html'
-    RootElement = 'result'
-    Left = 496
-    Top = 24
   end
   object ClientDataSet1: TClientDataSet
     Aggregates = <>

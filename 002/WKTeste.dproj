@@ -103,11 +103,12 @@
             <Form>frPesquisa</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="UDmConexao.pas">
-            <Form>DmConexao</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TDataModule</DesignClass>
-        </DCCReference>
+        <DCCReference Include="clConex.pas"/>
+        <DCCReference Include="DataSetConverter4D.Helper.pas"/>
+        <DCCReference Include="DataSetConverter4D.Impl.pas"/>
+        <DCCReference Include="DataSetConverter4D.pas"/>
+        <DCCReference Include="DataSetConverter4D.Util.pas"/>
+        <DCCReference Include="UThread.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

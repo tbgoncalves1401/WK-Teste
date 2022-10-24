@@ -5,52 +5,48 @@ object WsEnderecoIntegracao: TWsEnderecoIntegracao
   object QyEnderecoIntegracao: TFDQuery
     CachedUpdates = True
     Connection = DmConexao.FdConexao
-    UpdateObject = FDUpdateSQL
     SQL.Strings = (
       'SELECT * FROM ENDERECO_INTEGRACAO')
     Left = 48
     Top = 32
-    object QyEnderecoIntegracaoidpessoa: TLargeintField
-      FieldName = 'idpessoa'
-      Origin = 'idpessoa'
+    object QyEnderecoIntegracaoidendereco: TLargeintField
+      FieldName = 'idendereco'
+      Origin = 'idendereco'
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
     end
-    object QyEnderecoIntegracaoflnatureza: TIntegerField
-      FieldName = 'flnatureza'
-      Origin = 'flnatureza'
-      Required = True
-    end
-    object QyEnderecoIntegracaodsdocumento: TStringField
-      FieldName = 'dsdocumento'
-      Origin = 'dsdocumento'
-      Required = True
-    end
-    object QyEnderecoIntegracaonmprimeiro: TStringField
-      FieldName = 'nmprimeiro'
-      Origin = 'nmprimeiro'
-      Required = True
-      Size = 100
-    end
-    object QyEnderecoIntegracaonmsegundo: TStringField
-      FieldName = 'nmsegundo'
-      Origin = 'nmsegundo'
-      Required = True
-      Size = 100
-    end
-    object QyEnderecoIntegracaodtregistro: TDateField
+    object QyEnderecoIntegracaodsuf: TStringField
       AutoGenerateValue = arDefault
-      FieldName = 'dtregistro'
-      Origin = 'dtregistro'
+      FieldName = 'dsuf'
+      Origin = 'dsuf'
+      Size = 50
+    end
+    object QyEnderecoIntegracaonmcidade: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'nmcidade'
+      Origin = 'nmcidade'
+      Size = 100
+    end
+    object QyEnderecoIntegracaonmlogradouro: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'nmlogradouro'
+      Origin = 'nmlogradouro'
+      Size = 50
+    end
+    object QyEnderecoIntegracaodscomplemento: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'dscomplemento'
+      Origin = 'dscomplemento'
+      Size = 100
     end
   end
   object FDUpdateSQL: TFDUpdateSQL
     InsertSQL.Strings = (
       'INSERT INTO wk.endereco_integracao'
-      '(dsuf, nmcidade, nmlogradouro, dscomplemento)'
+      '(:idendereco, dsuf, nmcidade, nmlogradouro, dscomplemento)'
       
-        'VALUES (:new_dsuf, :new_nmcidade, :new_nmlogradouro, :new_dscomp' +
-        'lemento)')
+        'VALUES (:new_idendereco, :new_dsuf, :new_nmcidade, :new_nmlograd' +
+        'ouro, :new_dscomplemento)')
     ModifySQL.Strings = (
       'UPDATE wk.endereco_integracao'
       
@@ -71,7 +67,7 @@ object WsEnderecoIntegracao: TWsEnderecoIntegracao
   object QyLast: TFDQuery
     Connection = DmConexao.FdConexao
     SQL.Strings = (
-      'SELECT MAX(IDPESSOA)NEW FROM ENDERECO_INTEGRACAO')
+      'SELECT MAX(idendereco)NEW FROM ENDERECO_INTEGRACAO')
     Left = 152
     Top = 104
   end

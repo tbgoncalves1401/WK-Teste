@@ -3,19 +3,15 @@ unit UPesquisaPessoa;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, IPPeerClient, Vcl.StdCtrls, REST.Client,
-  Data.Bind.Components, Data.Bind.ObjectScope, Vcl.ExtCtrls, System.JSON,
-  Data.DB, Datasnap.DBClient, Vcl.Grids, Vcl.DBGrids;
+  Winapi.Windows, Vcl.Forms, System.JSON, System.SysUtils,
+  Vcl.StdCtrls, Vcl.Buttons, Vcl.Controls, System.Classes, Data.DB,
+  Datasnap.DBClient, Vcl.Grids, Vcl.DBGrids, Vcl.ExtCtrls;
 
 type
   TfrPesquisa = class(TForm)
     Panel1: TPanel;
     Label1: TLabel;
     EdPesquisa: TEdit;
-    RESTClient1: TRESTClient;
-    RESTRequest1: TRESTRequest;
-    RESTResponse1: TRESTResponse;
     btnPesquisar: TButton;
     ClientDataSet1: TClientDataSet;
     DataSource1: TDataSource;
@@ -25,7 +21,6 @@ type
     procedure FormShow(Sender: TObject);
   private
     { Private declarations }
-    procedure JsonToDataset(aDataset : TDataSet; aJSON : string);
   public
     { Public declarations }
     codP, codEndInt : string;
@@ -37,31 +32,77 @@ var
 implementation
 
 uses
-  System.JSON.Readers, REST.Response.Adapter;
+  System.JSON.Readers, clConex,  DataSetConverter4D.Helper;
 
 resourcestring
   URL = 'http://127.0.0.1:8080/datasnap/rest/TWsPessoa/Pessoa';
+  URL_Endereco = 'http://127.0.0.1:8080/datasnap/rest/TWsEndereco/Endereco';
 
 {$R *.dfm}
 
 procedure TfrPesquisa.btnPesquisarClick(Sender: TObject);
 var
-  retorno: string;
+  pesquisa: TComRest;
+  obj: TJSONObject;
+  i: Integer;
 begin
-  RESTClient1.BaseURL := URL+'/'+EdPesquisa.Text;
-  RESTRequest1.Execute;
-  retorno := RESTRequest1.Response.JSONText;
-  Delete(retorno, pos('[', retorno), 1);
-  Delete(retorno, pos(']', retorno), 1);
-  JsonToDataset(ClientDataSet1, retorno);
+  if (EdPesquisa.Text <> '')and(StrToInt(EdPesquisa.Text)>0) then
+  begin
+    pesquisa := TComRest.create(URL+'/'+EdPesquisa.Text);
+    try
+      obj := pesquisa.executar;
+      if pos('null', obj.ToString)>0 then
+      begin
+        if ClientDataSet1.Active then
+          ClientDataSet1.EmptyDataSet;
+        Application.MessageBox('Pessoa não encontrada na base de dados', 'Informação', MB_OK+MB_ICONINFORMATION)
+      end
+      else
+      begin
+        ClientDataSet1.Close;
+        ClientDataSet1.FieldDefs.Clear; //Limpa os Campos Existentes
+
+        for i := 0 to Pred(Obj.Size) do
+        begin
+          if (Length(Obj.Get(i).JsonValue.Value) > 250) then
+          begin
+            ClientDataSet1.FieldDefs.Add(Obj.Get(i).JsonString.Value, ftBlob);
+          end
+          else
+          begin
+            ClientDataSet1.FieldDefs.Add(Obj.Get(i).JsonString.Value, ftString, 255);
+          end;
+        end;
+        ClientDataSet1.CreateDataSet;
+        ClientDataSet1.FromJSONObject(obj);
+      end;
+    finally
+      FreeAndNil(pesquisa);
+    end;
+  end
+  else
+  begin
+    EdPesquisa.SetFocus;
+    Application.MessageBox('Favor informar alguma informação para ser pesquisada.', 'Perigo', MB_OK+MB_ICONWARNING);
+  end;
 end;
 
 procedure TfrPesquisa.DBGrid1DblClick(Sender: TObject);
+var
+  ender: TComRest;
+  obj: TJSONObject;
 begin
   if(ClientDataSet1.Active)and(ClientDataSet1.RecordCount >= 1) then
   begin
-    codP      := ClientDataSet1.FindField('idpessoa').AsString;
-    codEndInt := ClientDataSet1.FindField('idendereco').AsString;
+    codP        := ClientDataSet1.FindField('idpessoa').AsString;
+    ender       := TComRest.create(URL_Endereco+'P/'+codP);
+    try
+      ender.metodo := Consultar;
+      obj := ender.executar;
+      codEndInt := obj.GetValue('idendereco').Value;
+    finally
+      FreeAndNil(ender);
+    end;
   end;
   Close;
 end;
@@ -72,26 +113,5 @@ begin
   codEndInt := '0';
 end;
 
-procedure TfrPesquisa.JsonToDataset(aDataset: TDataSet; aJSON: string);
-var
-  JObj: TJSONArray;
-  vConv : TCustomJSONDataSetAdapter;
-begin
-  if (aJSON = EmptyStr) then
-  begin
-    Exit;
-  end;
-
-  JObj := TJSONObject.ParseJSONValue(aJSON) as TJSONArray;
-  vConv := TCustomJSONDataSetAdapter.Create(Nil);
-
-  try
-    vConv.Dataset := aDataset;
-    vConv.UpdateDataSet(JObj);
-  finally
-    vConv.Free;
-    JObj.Free;
-  end;
-end;
 
 end.

@@ -15,18 +15,17 @@ type
   TWsEndereco = class(TDSServerModule)
     QyEndereco: TFDQuery;
     FDUpdateSQL: TFDUpdateSQL;
-    QyEnderecoidpessoa: TLargeintField;
-    QyEnderecoflnatureza: TIntegerField;
-    QyEnderecodsdocumento: TStringField;
-    QyEndereconmprimeiro: TStringField;
-    QyEndereconmsegundo: TStringField;
-    QyEnderecodtregistro: TDateField;
     QyLast: TFDQuery;
+    QyEnderecoidendereco: TLargeintField;
+    QyEnderecoidpessoa: TLargeintField;
+    QyEnderecodscep: TStringField;
   private
     { Private declarations }
   public
     { Public declarations }
-    function Endereco(idendereco: integer): TJSONValue; ///GET
+    function Endereco(idendereco: integer): TJSONValue; //GET
+    function EnderecoLast: TJSONValue; //GET
+    function EnderecoP(idpessoa: string): TJSONValue; ///GET
     function acceptEndereco(dados: TJSONObject): TJSONValue; //PUT
     function updateEndereco(idendereco: integer; dados: TJSONObject): TJSONValue;//POST
     function cancelEndereco(idendereco: integer): TJSONValue;//DELETE
@@ -61,12 +60,18 @@ begin
     QyLast.Close;
     QyLast.Open;
     L := (QyLast.FieldByName('NEW').AsInteger+1).ToString;
-    QyEndereco.SQL.Add('SELECT * FROM ENDERECO WHERE IDENDERECO = -1');
+    QyEndereco.SQL.Add('SELECT * FROM ENDERECO WHERE IDENDERECO = '+l);
     QyEndereco.Open;
     QyEndereco.FromJSONObject(dados);
     QyEndereco.Edit;
-    QyEnderecoidpessoa.Value := l.ToInt64;
-    QyEndereco.ApplyUpdates();
+    QyEnderecoidendereco.Value := l.ToInt64;
+    VDmConexao.FdConexao.StartTransaction;
+    try
+      QyEndereco.ApplyUpdates();
+      VDmConexao.FdConexao.Commit
+    Except
+      VDmConexao.FdConexao.Rollback;
+    end;
     Result := QyEndereco.AsJSONArray;
   finally
     FreeAndNil(VDmConexao);
@@ -85,12 +90,40 @@ begin
     FDUpdateSQL.Connection := QyEndereco.Connection;
     QyEndereco.Close;
     QyEndereco.SQL.Clear;
-    QyEndereco.SQL.Add('SELECT * FROM ENDERECO');
-    QyEndereco.SQL.Add(' WHERE IDENDERECO = :idendereco');
+    QyEndereco.SQL.Add('SELECT * FROM ENDERECO WHERE IDENDERECO = :idendereco');
     QyEndereco.ParamByName('idendereco').AsInteger := idendereco;
     QyEndereco.Open;
-    QyEndereco.Delete;
-    QyEndereco.ApplyUpdates();
+    if not(QyEndereco.IsEmpty) then
+    begin
+      QyEndereco.Delete;
+      VDmConexao.FdConexao.StartTransaction;
+      try
+        QyEndereco.ApplyUpdates();
+        VDmConexao.FdConexao.Commit
+      Except
+        VDmConexao.FdConexao.Rollback;
+      end;
+    end;
+    Result := QyEndereco.AsJSONArray;
+  finally
+    FreeAndNil(VDmConexao);
+  end;
+end;
+
+function TWsEndereco.EnderecoP(idpessoa: string): TJSONValue;
+var
+  VDmConexao: TDmConexao;
+begin
+  VDmConexao := TDmConexao.Create(nil);
+  try
+    VDmConexao.FdConexao.Connected := True;
+    QyEndereco.Connection := VDmConexao.FdConexao;
+    QyEndereco.ConnectionName := VDmConexao.FdConexao.ConnectionName;
+    QyEndereco.Close;
+    QyEndereco.SQL.Clear;
+    QyEndereco.SQL.Add('SELECT * FROM ENDERECO WHERE IDPESSOA= :cd ORDER BY dscep');
+    QyEndereco.ParamByName('cd').AsInteger := idpessoa.ToInteger;
+    QyEndereco.Open;
     Result := QyEndereco.AsJSONArray;
   finally
     FreeAndNil(VDmConexao);
@@ -122,6 +155,22 @@ begin
   end;
 end;
 
+function TWsEndereco.EnderecoLast: TJSONValue;
+var
+  VDmConexao: TDmConexao;
+  l: string;
+begin
+  VDmConexao := TDmConexao.Create(nil);
+  try
+    VDmConexao.FdConexao.Connected := True;
+    QyLast.Close;
+    QyLast.Open;
+    Result := QyLast.AsJSONArray;
+  finally
+    FreeAndNil(VDmConexao);
+  end;
+end;
+
 function TWsEndereco.updateEndereco(idendereco: integer;
   dados: TJSONObject): TJSONValue;
 var
@@ -135,12 +184,17 @@ begin
     FDUpdateSQL.Connection := QyEndereco.Connection;
     QyEndereco.Close;
     QyEndereco.SQL.Clear;
-    QyEndereco.SQL.Add('SELECT * FROM PESSOA');
-    QyEndereco.SQL.Add(' WHERE IDPESSOA = :pessoa');
-    QyEndereco.ParamByName('pessoa').AsInteger := idendereco;
+    QyEndereco.SQL.Add('SELECT * FROM ENDERECO WHERE IDENDERECO = :endereco');
+    QyEndereco.ParamByName('endereco').AsInteger := idendereco;
     QyEndereco.Open;
     QyEndereco.RecordFromJSONObject(dados);
-    QyEndereco.ApplyUpdates();
+    VDmConexao.FdConexao.StartTransaction;
+    try
+      QyEndereco.ApplyUpdates();
+      VDmConexao.FdConexao.Commit
+    Except
+      VDmConexao.FdConexao.Rollback;
+    end;
     Result := QyEndereco.AsJSONArray;
   finally
     FreeAndNil(VDmConexao);

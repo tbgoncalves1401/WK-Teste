@@ -26,7 +26,8 @@ type
     { Private declarations }
   public
     { Public declarations }
-    function Pessoa(idpessoa: integer): TJSONValue; ///GET
+    function Pessoa(idpessoa: integer): TJSONValue; //GET
+    function PessoaLast: TJSONValue; //GET
     function acceptPessoa(dados: TJSONObject): TJSONValue; //PUT
     function updatePessoa(idpessoa: integer; dados: TJSONObject): TJSONValue;//POST
     function cancelPessoa(idpessoa: integer): TJSONValue;//DELETE
@@ -66,7 +67,13 @@ begin
     QyPessoa.FromJSONObject(dados);
     QyPessoa.Edit;
     QyPessoaidpessoa.Value := l.ToInt64;
-    QyPessoa.ApplyUpdates();
+    VDmConexao.FdConexao.StartTransaction;
+    try
+      QyPessoa.ApplyUpdates();
+      VDmConexao.FdConexao.Commit
+    Except
+      VDmConexao.FdConexao.Rollback;
+    end;
     Result := QyPessoa.AsJSONArray;
   finally
     FreeAndNil(VDmConexao);
@@ -85,12 +92,20 @@ begin
     FDUpdateSQL.Connection := QyPessoa.Connection;
     QyPessoa.Close;
     QyPessoa.SQL.Clear;
-    QyPessoa.SQL.Add('SELECT * FROM PESSOA');
-    QyPessoa.SQL.Add(' WHERE IDPESSOA = :pessoa');
+    QyPessoa.SQL.Add('SELECT * FROM PESSOA WHERE IDPESSOA = :pessoa');
     QyPessoa.ParamByName('pessoa').AsInteger := idpessoa;
     QyPessoa.Open;
-    QyPessoa.Delete;
-    QyPessoa.ApplyUpdates();
+    if not(QyPessoa.IsEmpty) then
+    begin
+      QyPessoa.Delete;
+      VDmConexao.FdConexao.StartTransaction;
+      try
+        QyPessoa.ApplyUpdates();
+        VDmConexao.FdConexao.Commit
+      Except
+        VDmConexao.FdConexao.Rollback;
+      end;
+    end;
     Result := QyPessoa.AsJSONArray;
   finally
     FreeAndNil(VDmConexao);
@@ -124,6 +139,22 @@ begin
   end;
 end;
 
+function TWsPessoa.PessoaLast: TJSONValue;
+var
+  VDmConexao: TDmConexao;
+  l: string;
+begin
+  VDmConexao := TDmConexao.Create(nil);
+  try
+    VDmConexao.FdConexao.Connected := True;
+    QyLast.Close;
+    QyLast.Open;
+    Result := QyLast.AsJSONArray;
+  finally
+    FreeAndNil(VDmConexao);
+  end;
+end;
+
 function TWsPessoa.updatePessoa(idpessoa: integer;
   dados: TJSONObject): TJSONValue;
 var
@@ -137,12 +168,17 @@ begin
     FDUpdateSQL.Connection := QyPessoa.Connection;
     QyPessoa.Close;
     QyPessoa.SQL.Clear;
-    QyPessoa.SQL.Add('SELECT * FROM PESSOA');
-    QyPessoa.SQL.Add(' WHERE IDPESSOA = :pessoa');
+    QyPessoa.SQL.Add('SELECT * FROM PESSOA WHERE IDPESSOA = :pessoa');
     QyPessoa.ParamByName('pessoa').AsInteger := idpessoa;
     QyPessoa.Open;
     QyPessoa.RecordFromJSONObject(dados);
-    QyPessoa.ApplyUpdates();
+    VDmConexao.FdConexao.StartTransaction;
+    try
+      QyPessoa.ApplyUpdates();
+      VDmConexao.FdConexao.Commit
+    Except
+      VDmConexao.FdConexao.Rollback;
+    end;
     Result := QyPessoa.AsJSONArray;
   finally
     FreeAndNil(VDmConexao);
